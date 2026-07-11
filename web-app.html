@@ -237,14 +237,6 @@
 <tr><td><strong>Pre-KYC user</strong></td><td>Logged-in user without identity (Dojah) verification — has no virtual account number.</td></tr>
 </table></div>
 
-<h3>Environment</h3>
-<ul class="plain">
-  <li>Web: <code>npm run build &amp;&amp; npm start</code> in <code>carty_new_website</code>. Env: <code>CARTY_API_ORIGIN</code> (API host), <code>SITE_URL</code> (public web URL used in QR/share links).</li>
-  <li>API: set <code>CARTY_WEB_URL=&lt;web url&gt;</code> so links created in the mobile app point at the web app under test.</li>
-  <li>Accounts are registered <strong>via the mobile app only</strong>. Needed: a KYC-verified account with wallet balance (buyer), an account with an active payment link (seller), and a pre-KYC account.</li>
-  <li>States/cities are fixed in the API: Lagos (Ikeja, Surulere, Lekki), FCT Abuja (Abuja Municipal), Rivers (Port Harcourt).</li>
-  <li>Default delivery fee is ₦1,500 unless the chosen city matches an active "extra delivery cost" record.</li>
-</ul>
 </section>
 
 <section id="requirements">
@@ -265,17 +257,9 @@
 <article class="req" data-req="FR-AUTH-2">
   <header><span class="req-id">FR-AUTH-2</span><h4>Two-factor (OTP) step</h4></header>
   <ol class="ac">
-    <li>After a correct password on a 2FA account, the form switches to a one-time-code input with a message saying where the code was sent (masked email, or authenticator app).</li>
+    <li>After a correct password on a 2FA account, the form switches to a one-time-code input with a message saying where the code was sent (the email address you provided during registration).</li>
     <li>Correct OTP completes login; wrong OTP shows an error and allows retry.</li>
     <li>"Use a different account" returns to the email/password step.</li>
-  </ol>
-</article>
-
-<article class="req" data-req="FR-AUTH-3">
-  <header><span class="req-id">FR-AUTH-3</span><h4>Session storage</h4></header>
-  <ol class="ac">
-    <li>The session lives in <code>carty_token</code> / <code>carty_refresh</code> cookies: <code>HttpOnly</code> (not readable from <code>document.cookie</code>), <code>SameSite=Lax</code>, ~30-day expiry, <code>Secure</code> in production.</li>
-    <li>The bearer token never appears in browser JS, localStorage, or page source.</li>
   </ol>
 </article>
 
