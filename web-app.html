@@ -1,0 +1,669 @@
+<title>Carty Web App — FRD</title>
+<style>
+  :root {
+    --paper: #f6f7f9;
+    --card: #ffffff;
+    --ink: #111823;
+    --muted: #5a6472;
+    --accent: #0038d8;
+    --accent-soft: rgba(0, 56, 216, 0.08);
+    --border: #dfe3ea;
+    --done: #0f7b4d;
+    --mono: "SF Mono", SFMono-Regular, ui-monospace, Menlo, Consolas, monospace;
+    --sans: Seravek, "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0e1113;
+      --card: #15191c;
+      --ink: #e8ecef;
+      --muted: #9aa4ad;
+      --accent: #39d6d6;
+      --accent-soft: rgba(57, 214, 214, 0.1);
+      --border: #2a3138;
+      --done: #4cc38a;
+    }
+  }
+  :root[data-theme="light"] {
+    --paper: #f6f7f9; --card: #ffffff; --ink: #111823; --muted: #5a6472;
+    --accent: #0038d8; --accent-soft: rgba(0,56,216,0.08); --border: #dfe3ea; --done: #0f7b4d;
+  }
+  :root[data-theme="dark"] {
+    --paper: #0e1113; --card: #15191c; --ink: #e8ecef; --muted: #9aa4ad;
+    --accent: #39d6d6; --accent-soft: rgba(57,214,214,0.1); --border: #2a3138; --done: #4cc38a;
+  }
+
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .wrap {
+    display: grid;
+    grid-template-columns: 232px minmax(0, 1fr);
+    gap: 2.5rem;
+    max-width: 71rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 6rem;
+  }
+  @media (max-width: 820px) {
+    .wrap { grid-template-columns: minmax(0, 1fr); }
+    nav.toc { position: static !important; max-height: none !important; border-right: 0 !important; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+  }
+
+  nav.toc {
+    position: sticky;
+    top: 1.5rem;
+    align-self: start;
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
+    font-size: 0.85rem;
+    padding-right: 1rem;
+    border-right: 1px solid var(--border);
+  }
+  nav.toc p.toc-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--muted);
+    margin: 0 0 0.5rem;
+  }
+  nav.toc a {
+    display: block;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.28rem 0;
+  }
+  nav.toc a:hover, nav.toc a:focus-visible { color: var(--accent); }
+  nav.toc a.sub { padding-left: 0.9rem; font-family: var(--mono); font-size: 0.78rem; }
+
+  #progress {
+    margin-top: 1.25rem;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  #progress strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+  #progress .bar {
+    height: 5px; border-radius: 3px; background: var(--border);
+    margin-top: 0.5rem; overflow: hidden;
+  }
+  #progress .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.25s ease; }
+  #progress button {
+    margin-top: 0.6rem; font: inherit; font-size: 0.72rem; color: var(--muted);
+    background: none; border: 1px solid var(--border); border-radius: 6px;
+    padding: 0.2rem 0.55rem; cursor: pointer;
+  }
+  #progress button:hover { color: var(--accent); border-color: var(--accent); }
+
+  header.doc h1 {
+    font-size: 1.85rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.4rem;
+    text-wrap: balance;
+  }
+  header.doc p.sub { color: var(--muted); margin: 0 0 1.4rem; max-width: 46rem; }
+  .meta {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    font-size: 0.78rem; margin-bottom: 2.5rem;
+  }
+  .meta span {
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: 0.25rem 0.8rem; background: var(--card); color: var(--muted);
+  }
+  .meta span b { color: var(--ink); font-weight: 600; }
+
+  main { max-width: 46rem; }
+  h2 {
+    font-size: 1.3rem; letter-spacing: -0.01em; text-wrap: balance;
+    margin: 3rem 0 0.75rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+  }
+  main > section:first-of-type h2 { border-top: 0; margin-top: 0; padding-top: 0; }
+  h3 { font-size: 1.02rem; margin: 1.8rem 0 0.5rem; }
+  p { margin: 0.5rem 0 1rem; }
+  .lead { color: var(--muted); }
+  code {
+    font-family: var(--mono); font-size: 0.86em;
+    background: var(--accent-soft); border-radius: 4px; padding: 0.1em 0.35em;
+  }
+  ul.plain { padding-left: 1.2rem; margin: 0.5rem 0 1rem; }
+  ul.plain li { margin: 0.3rem 0; }
+
+  .tablewrap { overflow-x: auto; margin: 0.75rem 0 1.25rem; }
+  table { border-collapse: collapse; font-size: 0.88rem; min-width: 100%; }
+  th, td { text-align: left; padding: 0.5rem 0.9rem 0.5rem 0; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+
+  article.req {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem 0.9rem;
+    margin: 0 0 1rem;
+  }
+  article.req header { display: flex; align-items: baseline; gap: 0.7rem; flex-wrap: wrap; }
+  .req-id {
+    font-family: var(--mono); font-size: 0.72rem; font-weight: 600;
+    color: var(--accent); background: var(--accent-soft);
+    border-radius: 5px; padding: 0.15rem 0.5rem; white-space: nowrap;
+  }
+  article.req h4 { font-size: 0.98rem; margin: 0; }
+  article.req p.note { font-size: 0.88rem; color: var(--muted); margin: 0.5rem 0 0.25rem; }
+
+  ol.ac { list-style: none; margin: 0.6rem 0 0.3rem; padding: 0; }
+  ol.ac li { display: flex; gap: 0.6rem; align-items: baseline; padding: 0.32rem 0; font-size: 0.92rem; border-top: 1px dashed var(--border); }
+  ol.ac li:first-child { border-top: 0; }
+  ol.ac input[type="checkbox"] {
+    accent-color: var(--accent);
+    width: 0.95rem; height: 0.95rem; flex: none;
+    transform: translateY(0.12rem);
+    cursor: pointer;
+  }
+  ol.ac label { cursor: pointer; }
+  ol.ac li.checked label { color: var(--muted); }
+  ol.ac li.checked .acn { color: var(--done); }
+  .acn { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); flex: none; width: 2.2rem; }
+
+  .callout {
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    background: var(--card);
+    border-radius: 0 10px 10px 0;
+    padding: 0.8rem 1.1rem;
+    font-size: 0.9rem;
+    margin: 1rem 0 1.5rem;
+  }
+  footer.doc { margin-top: 3.5rem; font-size: 0.78rem; color: var(--muted); border-top: 1px solid var(--border); padding-top: 1rem; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+
+<div class="wrap">
+<nav class="toc" aria-label="Contents">
+  <p class="toc-label">Contents</p>
+  <a href="#overview">1 · Overview &amp; setup</a>
+  <a href="#requirements">2 · Functional requirements</a>
+  <a class="sub" href="#fr-auth">FR-AUTH · Login &amp; session</a>
+  <a class="sub" href="#fr-pay">FR-PAY · Payment page</a>
+  <a class="sub" href="#fr-chk">FR-CHK · Checkout</a>
+  <a class="sub" href="#fr-dash">FR-DASH · Dashboard</a>
+  <a class="sub" href="#fr-link">FR-LINK · Payment links</a>
+  <a class="sub" href="#fr-ord">FR-ORD · Orders</a>
+  <a class="sub" href="#fr-txn">FR-TXN · Transactions</a>
+  <a class="sub" href="#fr-prof">FR-PROF · Profile</a>
+  <a href="#crosscutting">3 · Cross-cutting</a>
+  <a href="#outofscope">4 · Out of scope</a>
+  <a href="#known">5 · Known behaviours</a>
+  <div id="progress" aria-live="polite">
+    <strong id="pcount">0 / 0</strong> criteria checked
+    <div class="bar"><i id="pbar"></i></div>
+    <button type="button" id="preset">Reset checklist</button>
+  </div>
+</nav>
+
+<main>
+<header class="doc">
+  <h1>Carty Web App — Functional Requirements</h1>
+  <p class="sub">Test specification for the Carty web app: the public payment link page, login, and the account dashboard. Tick each acceptance criterion as you verify it — progress is saved in this browser.</p>
+  <div class="meta">
+    <span>Version <b>1.0</b></span>
+    <span>Date <b>11 Jul 2026</b></span>
+    <span>Audience <b>QA</b></span>
+    <span>App <b>carty_new_website</b></span>
+    <span>API <b>api.razz.ng</b></span>
+  </div>
+</header>
+
+<section id="overview">
+<h2>1 · Overview &amp; test setup</h2>
+<p>The web app extends the marketing site with a transactional surface: a <strong>public payment link page</strong> (<code>/pay/[code]</code>) with item details, a QR code, and pay-from-wallet checkout; a <strong>login flow</strong> (<code>/login</code>) for existing Carty accounts; and an <strong>authenticated dashboard</strong> (<code>/dashboard</code>) with wallet, payment links, orders, transactions, and profile.</p>
+<p>Money is <strong>escrow-first</strong>: the buyer's wallet is debited at checkout and the seller is credited only after the buyer confirms delivery. All amounts are stored in <strong>kobo</strong> by the API and displayed in naira (API <code>150000</code> → <code>₦1,500</code>).</p>
+
+<h3>Actors</h3>
+<div class="tablewrap"><table>
+<tr><th>Actor</th><th>Description</th></tr>
+<tr><td><strong>Visitor</strong></td><td>Not logged in. Can view payment link pages and marketing pages only.</td></tr>
+<tr><td><strong>Buyer</strong></td><td>Logged-in user opening someone else's payment link or viewing orders they placed.</td></tr>
+<tr><td><strong>Seller</strong></td><td>Logged-in user who created payment links / receives orders. Any account can be both buyer and seller — never both on the same order.</td></tr>
+<tr><td><strong>Pre-KYC user</strong></td><td>Logged-in user without identity (Dojah) verification — has no virtual account number.</td></tr>
+</table></div>
+
+<h3>Environment</h3>
+<ul class="plain">
+  <li>Web: <code>npm run build &amp;&amp; npm start</code> in <code>carty_new_website</code>. Env: <code>CARTY_API_ORIGIN</code> (API host), <code>SITE_URL</code> (public web URL used in QR/share links).</li>
+  <li>API: set <code>CARTY_WEB_URL=&lt;web url&gt;</code> so links created in the mobile app point at the web app under test.</li>
+  <li>Accounts are registered <strong>via the mobile app only</strong>. Needed: a KYC-verified account with wallet balance (buyer), an account with an active payment link (seller), and a pre-KYC account.</li>
+  <li>States/cities are fixed in the API: Lagos (Ikeja, Surulere, Lekki), FCT Abuja (Abuja Municipal), Rivers (Port Harcourt).</li>
+  <li>Default delivery fee is ₦1,500 unless the chosen city matches an active "extra delivery cost" record.</li>
+</ul>
+</section>
+
+<section id="requirements">
+<h2>2 · Functional requirements</h2>
+
+<h3 id="fr-auth">FR-AUTH — Authentication &amp; session</h3>
+
+<article class="req" data-req="FR-AUTH-1">
+  <header><span class="req-id">FR-AUTH-1</span><h4>Email/password login</h4></header>
+  <p class="note"><code>/login</code> accepts email + password and authenticates against the Carty API.</p>
+  <ol class="ac">
+    <li>Valid credentials (no 2FA) log the user in and redirect to <code>/dashboard</code> (or the <code>?next=</code> target).</li>
+    <li>Invalid credentials show the API error (e.g. "email or password is incorrect") without navigation.</li>
+    <li>Both fields are required; the browser blocks empty submission.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-AUTH-2">
+  <header><span class="req-id">FR-AUTH-2</span><h4>Two-factor (OTP) step</h4></header>
+  <ol class="ac">
+    <li>After a correct password on a 2FA account, the form switches to a one-time-code input with a message saying where the code was sent (masked email, or authenticator app).</li>
+    <li>Correct OTP completes login; wrong OTP shows an error and allows retry.</li>
+    <li>"Use a different account" returns to the email/password step.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-AUTH-3">
+  <header><span class="req-id">FR-AUTH-3</span><h4>Session storage</h4></header>
+  <ol class="ac">
+    <li>The session lives in <code>carty_token</code> / <code>carty_refresh</code> cookies: <code>HttpOnly</code> (not readable from <code>document.cookie</code>), <code>SameSite=Lax</code>, ~30-day expiry, <code>Secure</code> in production.</li>
+    <li>The bearer token never appears in browser JS, localStorage, or page source.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-AUTH-4">
+  <header><span class="req-id">FR-AUTH-4</span><h4>Route protection &amp; redirects</h4></header>
+  <ol class="ac">
+    <li>Visiting any <code>/dashboard*</code> URL logged-out redirects (307) to <code>/login?next=&lt;that URL&gt;</code>.</li>
+    <li>After login, the user lands on the original <code>next</code> target.</li>
+    <li><code>next</code> values that are not same-site relative paths (e.g. <code>https://evil.com</code>, <code>//evil.com</code>) are ignored — fallback is <code>/dashboard</code>.</li>
+    <li>Visiting <code>/login</code> while already logged in redirects straight to the target.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-AUTH-5">
+  <header><span class="req-id">FR-AUTH-5</span><h4>Logout</h4></header>
+  <ol class="ac">
+    <li>"Log out" in the dashboard nav clears the session cookies and returns to <code>/login</code>.</li>
+    <li>After logout, <code>/dashboard</code> redirects to login and the header reverts to "Log in".</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-AUTH-6">
+  <header><span class="req-id">FR-AUTH-6</span><h4>Header session state</h4></header>
+  <ol class="ac">
+    <li>Logged out: the site header shows a "Log in" link.</li>
+    <li>Logged in: the header shows an initials avatar + first name linking to <code>/dashboard</code> — on all pages using the shared header, including the landing page.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-AUTH-7">
+  <header><span class="req-id">FR-AUTH-7</span><h4>No web registration</h4></header>
+  <ol class="ac">
+    <li>The login page links prospective users to <code>/download</code> ("Get the Carty app") — there is no sign-up form on the web.</li>
+  </ol>
+</article>
+
+<h3 id="fr-pay">FR-PAY — Public payment link page (<code>/pay/[code]</code>)</h3>
+
+<article class="req" data-req="FR-PAY-1">
+  <header><span class="req-id">FR-PAY-1</span><h4>Link details display</h4></header>
+  <ol class="ac">
+    <li>A valid, active code renders: title, price in ₦, "Active payment link" badge, description (if any), delivery method, pickup area (if any), and product photos.</li>
+    <li>Photos render as a gallery: main image plus a thumbnail strip when more than one; clicking a thumbnail swaps the main image.</li>
+    <li>An unknown/invalid code returns the site's 404 page.</li>
+    <li>Page metadata (tab title / link preview) contains the item title and price; the first photo is the preview image.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-PAY-2">
+  <header><span class="req-id">FR-PAY-2</span><h4>QR code</h4></header>
+  <ol class="ac">
+    <li>The QR encodes <code>SITE_URL/pay/&lt;code&gt;</code> — scanning with a phone camera opens the same page.</li>
+    <li>Scanning with the <strong>Carty mobile app's</strong> link scanner resolves the same payment link (the app extracts the trailing code).</li>
+    <li>The QR sits on a white tile and scans in both dark and light site themes.</li>
+    <li>The copy button copies the page URL and shows "Copied!" feedback.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-PAY-3">
+  <header><span class="req-id">FR-PAY-3</span><h4>Visitor (logged-out) state</h4></header>
+  <ol class="ac">
+    <li>The payment panel explains escrow and shows "Log in to pay" → <code>/login?next=/pay/&lt;code&gt;</code> (returns here after login) and "Get the app".</li>
+    <li>No checkout fields are visible while logged out.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-PAY-4">
+  <header><span class="req-id">FR-PAY-4</span><h4>Inactive link</h4></header>
+  <ol class="ac">
+    <li>A link with status <code>inactive</code> shows "Link no longer active"; no checkout is possible for any user.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-PAY-5">
+  <header><span class="req-id">FR-PAY-5</span><h4>Seller viewing own link</h4></header>
+  <ol class="ac">
+    <li>The link's owner sees "This is your payment link" (share guidance + "View my orders") instead of checkout — a seller cannot buy from their own link (also enforced by the API).</li>
+  </ol>
+</article>
+
+<h3 id="fr-chk">FR-CHK — Checkout (logged-in buyer)</h3>
+
+<article class="req" data-req="FR-CHK-1">
+  <header><span class="req-id">FR-CHK-1</span><h4>Checkout form</h4></header>
+  <ol class="ac">
+    <li>Shows the buyer's wallet balance chip.</li>
+    <li>Fields: quantity (min 1), receiver's name and phone (pre-filled from profile), delivery address, state and city/LGA selects, optional delivery note.</li>
+    <li>City select is disabled until a state is chosen; changing state resets city.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-CHK-2">
+  <header><span class="req-id">FR-CHK-2</span><h4>Delivery fee</h4></header>
+  <ol class="ac">
+    <li>Selecting a city fetches and shows the delivery fee (₦1,500 default).</li>
+    <li>Until a city is chosen, the fee row reads "Select city"; the Pay button is disabled during fee lookups.</li>
+    <li>Changing city quickly in succession never leaves a fee from a previously selected city on screen.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-CHK-3">
+  <header><span class="req-id">FR-CHK-3</span><h4>Extra inspection (service fee)</h4></header>
+  <ol class="ac">
+    <li>If the API returns active extra-cost options, "Request extra inspection" reveals them with prices.</li>
+    <li>Selected options add an "Extra inspection" line and increase the total.</li>
+    <li>Unchecking the master checkbox clears selections and removes the charge.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-CHK-4">
+  <header><span class="req-id">FR-CHK-4</span><h4>Order summary &amp; totals</h4></header>
+  <ol class="ac">
+    <li>Summary shows item × quantity, delivery fee, inspection (if any), and total = item×qty + fee + inspection.</li>
+    <li>Changing quantity updates the item line and total immediately.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-CHK-5">
+  <header><span class="req-id">FR-CHK-5</span><h4>Insufficient balance</h4></header>
+  <ol class="ac">
+    <li>If total &gt; wallet balance: a warning shows the balance and points to funding in the app; the Pay button is disabled.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-CHK-6">
+  <header><span class="req-id">FR-CHK-6</span><h4>Placing the order</h4></header>
+  <ol class="ac">
+    <li>"Pay ₦X from wallet" debits the wallet, creates the order in escrow, and shows: "Payment in escrow", amount paid, order number, "Track order" and "Go to dashboard".</li>
+    <li>Missing address or state/city shows inline errors without submitting.</li>
+    <li>API failures (e.g. "insufficient balance", "payment link is not active") surface as readable errors; the form stays usable.</li>
+    <li>After success: balance is reduced by the total; the order appears in Orders as "In escrow"; the debit appears in Transactions.</li>
+  </ol>
+</article>
+
+<h3 id="fr-dash">FR-DASH — Dashboard overview (<code>/dashboard</code>)</h3>
+
+<article class="req" data-req="FR-DASH-1">
+  <header><span class="req-id">FR-DASH-1</span><h4>Wallet card (mirrors the mobile app)</h4></header>
+  <ol class="ac">
+    <li><strong>Has account:</strong> balance, account number with copy button ("Copied!" feedback), account name and bank, funding hint.</li>
+    <li><strong>KYC-verified, no account yet:</strong> "Your virtual account is not ready yet." with a <em>Get account number</em> button; success refreshes the card with the new details.</li>
+    <li><strong>Not KYC-verified:</strong> "Complete your identity verification in the Carty app to get an account number for funding your wallet." with <em>Verify in the app</em> → <code>/download</code>. No verification flow runs on the web.</li>
+    <li>The eye toggle hides/shows the balance (<code>••••••••</code>).</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-DASH-2">
+  <header><span class="req-id">FR-DASH-2</span><h4>Quick stats &amp; recent orders</h4></header>
+  <ol class="ac">
+    <li>"Active orders" counts orders not completed/cancelled; "Payment links" counts the user's links; both tiles navigate to their sections.</li>
+    <li>Up to 5 most recent orders show title, order number, date, amount, and status badge; each row opens the order detail.</li>
+    <li>With no orders, an empty state invites the user to share a payment link.</li>
+  </ol>
+</article>
+
+<h3 id="fr-link">FR-LINK — Payment links (<code>/dashboard/links</code>)</h3>
+
+<article class="req" data-req="FR-LINK-1">
+  <header><span class="req-id">FR-LINK-1</span><h4>List</h4></header>
+  <ol class="ac">
+    <li>Each link shows thumbnail (or initial placeholder), title, price, created date, status badge.</li>
+    <li>"Copy" copies <code>SITE_URL/pay/&lt;code&gt;</code>; "View" opens the public page.</li>
+    <li>Empty state offers "Create your first link".</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-LINK-2">
+  <header><span class="req-id">FR-LINK-2</span><h4>Create link (<code>/dashboard/links/new</code>)</h4></header>
+  <ol class="ac">
+    <li>Required: title and price (naira, decimals allowed, &gt; 0). Optional: description, delivery method (rider/pickup), pickup area, photos.</li>
+    <li>Invalid price (0, negative, non-numeric) is rejected with an error before submission.</li>
+    <li>On success the user is redirected to the new link's public page <code>/pay/&lt;code&gt;</code> (doubles as the share screen with QR).</li>
+    <li>The new link then appears in the links list and in the mobile app.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-LINK-3">
+  <header><span class="req-id">FR-LINK-3</span><h4>Product images</h4></header>
+  <ol class="ac">
+    <li>"Add" opens the file picker offering only <code>.jpg .jpeg .png .gif .bmp</code> (the API's allowlist).</li>
+    <li>Selected images show preview thumbnails immediately, each with ✕ to remove.</li>
+    <li>Maximum 5 images; the Add tile disappears at 5 and returns after removal. Over-selection adds only up to the cap.</li>
+    <li>Picking the same file twice in a row works (the input resets after each pick).</li>
+    <li>An unsupported extension is rejected client-side with a message naming the file.</li>
+    <li>Uploaded photos appear on the public page and in the links list after creation.</li>
+  </ol>
+</article>
+
+<h3 id="fr-ord">FR-ORD — Orders (<code>/dashboard/orders</code>)</h3>
+
+<article class="req" data-req="FR-ORD-1">
+  <header><span class="req-id">FR-ORD-1</span><h4>Orders list</h4></header>
+  <ol class="ac">
+    <li>All orders where the user is buyer or seller, newest first: title, role tag ("Buying"/"Selling"), order number, date, total, status badge.</li>
+    <li>Status labels: <code>in_escrow</code> → "In escrow", <code>assigned</code> → "Rider assigned", <code>picked_up</code> → "Picked up", <code>delivered</code> → "Delivered", <code>completed</code> → "Completed", <code>disputed</code> → "Disputed", <code>cancelled</code> → "Cancelled".</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-ORD-2">
+  <header><span class="req-id">FR-ORD-2</span><h4>Order detail</h4></header>
+  <ol class="ac">
+    <li>Shows item (with photo), quantity, placed date, and amount breakdown (item, delivery fee, service/inspection, total).</li>
+    <li>Shows delivery details: receiver, phone, address (with LGA/state), note.</li>
+    <li>Shows the progress timeline newest-first (e.g. "Payment held in escrow" after checkout) with dates.</li>
+    <li><strong>Delivery code visibility:</strong> the buyer sees their delivery code with guidance to share only on receipt. The <strong>seller must never see the delivery code</strong>.</li>
+    <li>Accessing an order the user is not a party to returns 404.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-ORD-3">
+  <header><span class="req-id">FR-ORD-3</span><h4>Confirm delivery (buyer only)</h4></header>
+  <ol class="ac">
+    <li>Available to the buyer while the order is open (not completed/cancelled/disputed).</li>
+    <li>The correct delivery code marks the order Delivered → Completed and shows "payment has been released to the seller".</li>
+    <li>A wrong code shows "Invalid delivery code" and changes nothing.</li>
+    <li>After confirmation: the <strong>seller's balance increases by the item amount</strong>, the status badge reads "Completed", and the timeline gains "Order Completed".</li>
+    <li>The seller has no confirm-delivery control; the API also rejects a seller completing an order ("Only the buyer can complete this order.").</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-ORD-4">
+  <header><span class="req-id">FR-ORD-4</span><h4>Disputes</h4></header>
+  <ol class="ac">
+    <li>Buyer or seller can open a dispute on an open order; reason and description are required.</li>
+    <li>On success the order refreshes with a confirmation notice; status becomes "Disputed".</li>
+  </ol>
+</article>
+
+<article class="req" data-req="FR-ORD-5">
+  <header><span class="req-id">FR-ORD-5</span><h4>Rating</h4></header>
+  <ol class="ac">
+    <li>Available only once the order is Completed.</li>
+    <li>Requires a 1–5 star selection (comment optional); zero stars shows an error.</li>
+    <li>Success shows a thank-you notice.</li>
+  </ol>
+</article>
+
+<h3 id="fr-txn">FR-TXN — Transactions (<code>/dashboard/transactions</code>)</h3>
+
+<article class="req" data-req="FR-TXN-1">
+  <header><span class="req-id">FR-TXN-1</span><h4>Transactions list</h4></header>
+  <ol class="ac">
+    <li>Up to the 50 most recent non-pending transactions, newest first: description, transaction ID, date, status badge, signed amount (− for debits, + green for credits).</li>
+    <li>A Carty order payment appears as a "successful" debit immediately after checkout.</li>
+    <li>Empty state renders when the account has no transactions.</li>
+  </ol>
+</article>
+
+<h3 id="fr-prof">FR-PROF — Profile (<code>/dashboard/profile</code>)</h3>
+
+<article class="req" data-req="FR-PROF-1">
+  <header><span class="req-id">FR-PROF-1</span><h4>Profile view &amp; edit</h4></header>
+  <ol class="ac">
+    <li>Shows photo (or initials), full name, verified badge when KYC is complete, @tag, and read-only email and phone (visually disabled).</li>
+    <li>First/last name are editable; "Save changes" is disabled until something changes and re-disables after a successful save ("Profile updated.").</li>
+    <li>Photo can be changed (<code>.jpg .jpeg .png .gif .bmp</code>) with an immediate preview; the saved photo persists after reload and shows in the mobile app.</li>
+    <li>A banner promotes the app for everything else ("Do more with the Carty app…") with a Get-the-app button.</li>
+    <li>Name changes appear in the dashboard greeting and header after refresh.</li>
+  </ol>
+</article>
+</section>
+
+<section id="crosscutting">
+<h2>3 · Cross-cutting requirements</h2>
+
+<article class="req" data-req="NFR-1">
+  <header><span class="req-id">NFR-1</span><h4>API mediation</h4></header>
+  <ol class="ac">
+    <li>The browser never calls the Go API directly — all traffic goes through the web app's origin (<code>/api/auth/*</code>, <code>/api/proxy/*</code>).</li>
+    <li>The proxy exposes only <code>carty/</code>, <code>me/</code>, <code>transaction</code>, <code>notification</code> paths; anything else (e.g. <code>/api/proxy/auth/login</code>) returns 404.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="NFR-2">
+  <header><span class="req-id">NFR-2</span><h4>Error resilience</h4></header>
+  <ol class="ac">
+    <li>API unreachable: <code>/pay/[code]</code> returns 404; dashboard pages render with empty data rather than crashing.</li>
+    <li>Form submissions during an outage show "Could not reach Carty. Please try again."</li>
+  </ol>
+</article>
+
+<article class="req" data-req="NFR-3">
+  <header><span class="req-id">NFR-3</span><h4>Theme &amp; responsiveness</h4></header>
+  <ol class="ac">
+    <li>All new pages render correctly in dark (default) and light themes.</li>
+    <li>On mobile viewports the checkout panel stacks below the item details and the dashboard nav becomes a horizontal scroll row.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="NFR-4">
+  <header><span class="req-id">NFR-4</span><h4>Currency display</h4></header>
+  <ol class="ac">
+    <li>Every amount = API kobo ÷ 100, formatted with ₦ and thousands separators; whole-naira amounts show no decimals.</li>
+  </ol>
+</article>
+
+<article class="req" data-req="NFR-5">
+  <header><span class="req-id">NFR-5</span><h4>SEO / crawling</h4></header>
+  <ol class="ac">
+    <li><code>robots.txt</code> disallows <code>/dashboard</code> and <code>/api/</code>; payment pages remain crawlable.</li>
+  </ol>
+</article>
+</section>
+
+<section id="outofscope">
+<h2>4 · Out of scope — do not raise as defects</h2>
+<ul class="plain">
+  <li>Registration, password reset, and KYC/Dojah verification on the web (app-only; web links out to <code>/download</code>).</li>
+  <li>Wallet funding by card, withdrawals, transfers (funding is by bank transfer to the virtual account, or in the app).</li>
+  <li>Changing email/phone on the web.</li>
+  <li>Rider-facing and admin features.</li>
+  <li>Payment link editing/deactivation from the web (create + share only).</li>
+  <li>Push/real-time notifications and live rider map tracking.</li>
+</ul>
+</section>
+
+<section id="known">
+<h2>5 · Known behaviours useful for QA</h2>
+<ul class="plain">
+  <li>Delivery fee defaults to ₦1,500 for any city without a matching extra-cost record.</li>
+  <li>The checkout service fee is the sum of selected "extra inspection" options (₦0 when none).</li>
+  <li>Orders skip <code>pending_payment</code>: wallet checkout puts them directly into <code>in_escrow</code>.</li>
+  <li>The API returns shareable links as <code>https://carty.ng/pay/&lt;code&gt;</code> (base overridable with <code>CARTY_WEB_URL</code>), so links created in the mobile app open the web page under test.</li>
+  <li>Session cookies last ~30 days, but logout (web or app) or a password change invalidates the token server-side — the next dashboard request redirects to login.</li>
+</ul>
+
+<div class="callout">Source of truth: <code>carty_new_website/docs/frd_web_app.md</code> in the repository. Raise discrepancies between this page and observed behaviour as defects against the web app, referencing the requirement ID.</div>
+</section>
+
+<footer class="doc">Carty Web App FRD v1.0 · Generated 11 Jul 2026 · Checklist state is stored locally in your browser only.</footer>
+</main>
+</div>
+
+<script>
+(function () {
+  var KEY = "carty-frd-v1";
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) {}
+
+  var boxes = [];
+  document.querySelectorAll("article.req").forEach(function (req) {
+    var reqId = req.getAttribute("data-req");
+    req.querySelectorAll("ol.ac > li").forEach(function (li, i) {
+      var id = reqId + ".AC" + (i + 1);
+      var box = document.createElement("input");
+      box.type = "checkbox";
+      box.id = "cb-" + id;
+      box.checked = !!state[id];
+
+      var label = document.createElement("label");
+      label.setAttribute("for", box.id);
+      while (li.firstChild) label.appendChild(li.firstChild);
+
+      var num = document.createElement("span");
+      num.className = "acn";
+      num.textContent = "AC" + (i + 1);
+
+      li.appendChild(box);
+      li.appendChild(num);
+      li.appendChild(label);
+      li.classList.toggle("checked", box.checked);
+
+      box.addEventListener("change", function () {
+        state[id] = box.checked;
+        if (!box.checked) delete state[id];
+        li.classList.toggle("checked", box.checked);
+        try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+        render();
+      });
+      boxes.push(box);
+    });
+  });
+
+  var count = document.getElementById("pcount");
+  var bar = document.getElementById("pbar");
+  function render() {
+    var done = boxes.filter(function (b) { return b.checked; }).length;
+    count.textContent = done + " / " + boxes.length;
+    bar.style.width = boxes.length ? (100 * done / boxes.length) + "%" : "0";
+  }
+  render();
+
+  document.getElementById("preset").addEventListener("click", function () {
+    if (!confirm("Clear all checked criteria?")) return;
+    state = {};
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    boxes.forEach(function (b) { b.checked = false; b.closest("li").classList.remove("checked"); });
+    render();
+  });
+})();
+</script>
