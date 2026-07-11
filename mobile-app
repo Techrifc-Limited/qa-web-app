@@ -1,0 +1,897 @@
+<title>Carty User App — Functional Requirements Document</title>
+<style>
+  :root {
+    --paper: #F7F8FC;
+    --panel: #FFFFFF;
+    --ink: #14172B;
+    --ink-soft: #4A4E68;
+    --ink-faint: #7B7F9B;
+    --border: #E1E4EE;
+    --border-strong: #CBD0E6;
+    --brand: #003EFE;
+    --brand-deep: #0026A3;
+    --brand-soft: #EAF0FF;
+    --success: #0A673C;
+    --success-soft: #DFF7E6;
+    --warning: #B54708;
+    --warning-soft: #FFF1DE;
+    --danger: #8F0B09;
+    --danger-soft: #FCE4E2;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--brand); }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  .shell {
+    display: grid;
+    grid-template-columns: 272px minmax(0, 1fr);
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 28px 20px 40px;
+    border-right: 1px solid var(--border);
+    background: var(--paper);
+  }
+
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-brand .mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--brand), var(--brand-deep));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    font-size: 14px;
+    flex: none;
+  }
+
+  .sidebar-brand strong {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .sidebar-sub {
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin: 2px 0 22px 38px;
+  }
+
+  .toc-group { margin-bottom: 18px; }
+
+  .toc-heading {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin: 0 0 8px 2px;
+  }
+
+  .toc-group nav a {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    text-decoration: none;
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    padding: 5px 8px;
+    border-radius: 7px;
+    margin: 0 -8px;
+  }
+
+  .toc-group nav a:hover { background: var(--brand-soft); color: var(--brand-deep); }
+
+  .toc-group nav a .num {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    flex: none;
+    width: 26px;
+  }
+
+  /* ---------- Main ---------- */
+  main {
+    min-width: 0;
+    padding: 48px 56px 120px;
+  }
+
+  .cover {
+    margin-bottom: 44px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cover .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--brand);
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    margin: 0 0 14px;
+  }
+
+  .cover h1 {
+    font-size: 34px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+    text-wrap: balance;
+    font-weight: 800;
+  }
+
+  .cover p.lede {
+    font-size: 16px;
+    color: var(--ink-soft);
+    max-width: 62ch;
+    margin: 0 0 22px;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .meta-chip {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 9px 14px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    min-width: 120px;
+  }
+
+  .meta-chip .k {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+  }
+
+  .meta-chip .v {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  section.module { margin-bottom: 52px; scroll-margin-top: 24px; }
+
+  section.module > .module-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+
+  section.module > .module-head .idx {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--brand);
+    font-weight: 700;
+  }
+
+  section.module h2 {
+    font-size: 21px;
+    letter-spacing: -0.01em;
+    margin: 0;
+    font-weight: 750;
+  }
+
+  section.module > .module-desc {
+    color: var(--ink-soft);
+    max-width: 68ch;
+    margin: 0 0 8px;
+    font-size: 14.5px;
+  }
+
+  .precond {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    background: var(--brand-soft);
+    border: 1px solid #D2E0FF;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin: 14px 0 20px;
+    font-size: 13.5px;
+    color: var(--brand-deep);
+  }
+
+  .precond .label {
+    font-weight: 700;
+    flex: none;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    padding-top: 1px;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    min-width: 640px;
+  }
+
+  thead th {
+    text-align: left;
+    background: var(--panel);
+    color: var(--ink-faint);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+    vertical-align: top;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  td.id, th.id-col {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--brand-deep);
+    font-weight: 600;
+    white-space: nowrap;
+    width: 1%;
+  }
+
+  td.req { font-weight: 500; }
+  td.expected { color: var(--ink-soft); }
+
+  .pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  .pill.p0 { background: var(--danger-soft); color: var(--danger); }
+  .pill.p1 { background: var(--warning-soft); color: var(--warning); }
+  .pill.p2 { background: var(--border); color: var(--ink-soft); }
+
+  .callout {
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin: 18px 0;
+    font-size: 13.5px;
+  }
+
+  .callout.fixed {
+    background: var(--success-soft);
+    border: 1px solid #BEEBCB;
+  }
+  .callout.fixed .callout-title { color: var(--success); }
+
+  .callout.limit {
+    background: var(--warning-soft);
+    border: 1px solid #FBDDB6;
+  }
+  .callout.limit .callout-title { color: var(--warning); }
+
+  .callout-title {
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .callout ul { margin: 0; padding-left: 18px; }
+  .callout li { margin-bottom: 4px; }
+  .callout li:last-child { margin-bottom: 0; }
+
+  code, .kbd {
+    font-family: var(--mono);
+    background: var(--brand-soft);
+    color: var(--brand-deep);
+    padding: 1px 6px;
+    border-radius: 5px;
+    font-size: 0.88em;
+  }
+
+  .field-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 10px;
+    margin: 14px 0 20px;
+  }
+
+  .field-card {
+    border: 1px solid var(--border);
+    background: var(--panel);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+
+  .field-card .name {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .field-card .rule {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+  }
+
+  .req-tag {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--danger);
+    margin-left: 6px;
+  }
+
+  .checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .checklist li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13.5px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+
+  .checklist input[type="checkbox"] {
+    margin-top: 3px;
+    accent-color: var(--brand);
+    flex: none;
+  }
+
+  .checklist .item-title { font-weight: 600; }
+  .checklist .item-note { color: var(--ink-soft); font-size: 12.5px; margin-top: 2px; }
+
+  .divider-note {
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    margin-top: -4px;
+    margin-bottom: 16px;
+  }
+
+  footer.doc-footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--ink-faint);
+    font-size: 12.5px;
+  }
+
+  @media (max-width: 880px) {
+    .shell { grid-template-columns: 1fr; }
+    .sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+    main { padding: 32px 20px 90px; }
+  }
+
+  @media print {
+    .sidebar { display: none; }
+    .shell { grid-template-columns: 1fr; }
+    section.module { break-inside: avoid; }
+  }
+</style>
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="mark">C</div>
+      <strong>Carty</strong>
+    </div>
+    <p class="sidebar-sub">User app · FRD for QA</p>
+
+    <div class="toc-group">
+      <p class="toc-heading">Front matter</p>
+      <nav>
+        <a href="#setup"><span class="num">00</span>Test environment setup</a>
+        <a href="#regression"><span class="num">00</span>Regression focus (this cycle)</a>
+      </nav>
+    </div>
+
+    <div class="toc-group">
+      <p class="toc-heading">Modules</p>
+      <nav>
+        <a href="#m1"><span class="num">01</span>Onboarding</a>
+        <a href="#m2"><span class="num">02</span>Sign up &amp; login</a>
+        <a href="#m3"><span class="num">03</span>Dashboard</a>
+        <a href="#m4"><span class="num">04</span>Wallet &amp; funding</a>
+        <a href="#m5"><span class="num">05</span>Create payment link</a>
+        <a href="#m6"><span class="num">06</span>View &amp; manage links</a>
+        <a href="#m7"><span class="num">07</span>Receive payment (scan/paste)</a>
+        <a href="#m8"><span class="num">08</span>Place order (checkout)</a>
+        <a href="#m9"><span class="num">09</span>Orders &amp; tracking</a>
+        <a href="#m10"><span class="num">10</span>Transactions</a>
+        <a href="#m11"><span class="num">11</span>Notifications</a>
+        <a href="#m12"><span class="num">12</span>Account &amp; profile</a>
+      </nav>
+    </div>
+
+    <div class="toc-group">
+      <p class="toc-heading">Back matter</p>
+      <nav>
+        <a href="#cross-cutting"><span class="num">13</span>Cross-cutting rules</a>
+        <a href="#out-of-scope"><span class="num">14</span>Out of scope</a>
+      </nav>
+    </div>
+  </aside>
+
+  <main>
+    <div class="cover">
+      <p class="eyebrow">Functional Requirements Document</p>
+      <h1>Carty User App — QA Test Reference</h1>
+      <p class="lede">
+        Covers every buyer/seller-facing screen in the Carty user mobile app: onboarding, wallet,
+        creating and sharing payment links, scanning/pasting to pay, checkout, order tracking, and
+        transaction history. Each module lists numbered, testable requirements with expected results —
+        use the checkboxes to sign off a pass.
+      </p>
+      <div class="meta-row">
+        <div class="meta-chip"><span class="k">Document date</span><span class="v">11 Jul 2026</span></div>
+        <div class="meta-chip"><span class="k">App</span><span class="v">Carty user (mobile)</span></div>
+        <div class="meta-chip"><span class="k">Platforms</span><span class="v">Android · iOS</span></div>
+        <div class="meta-chip"><span class="k">Backend</span><span class="v">Shared Razz/Carty API</span></div>
+        <div class="meta-chip"><span class="k">Status</span><span class="v">Ready for QA pass</span></div>
+      </div>
+    </div>
+
+    <section class="module" id="setup">
+      <div class="module-head"><h2>Test environment setup</h2></div>
+      <p class="module-desc">What QA needs before testing can start.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Item</th><th>Detail</th></tr></thead>
+          <tbody>
+            <tr><td><strong>API base URL</strong></td><td>Set in the app's <code>.env</code> as <code>BASE_URL</code>. On a physical device or emulator, this must be your test machine's LAN IP (e.g. <code>http://10.x.x.x:3005/api</code>), never <code>localhost</code> — <code>localhost</code> on a device resolves to the device itself, not the server.</td></tr>
+            <tr><td><strong>Test accounts</strong></td><td>Register through the in-app Sign Up flow, or via <code>POST /auth/register</code> with header <code>X-App: carty-user</code>. You need <strong>two</strong> accounts to test payment flows — a seller cannot buy from their own link (rejected with "seller cannot buy from their own payment link").</td></tr>
+            <tr><td><strong>Email verification</strong></td><td>Creating a payment link requires a verified email (otherwise the API returns <em>"You must verify your email first."</em>). On dev/staging builds only (never production), the OTP screen accepts the override code <code>013579</code> in place of the emailed code.</td></tr>
+            <tr><td><strong>Wallet funding</strong></td><td>New accounts start at ₦0.00. To test a <em>successful</em> payment end to end, the buyer's wallet needs a real credit — either a real transfer to their virtual account number (after identity verification), or an internal balance credit from an admin/staff account. Without funding, checkout will correctly hit the insufficient-balance path (see FR‑8.9).</td></tr>
+            <tr><td><strong>QR scanning</strong></td><td>Requires a physical device with a working camera and camera permission granted. Simulators/emulators without a virtual camera feed will fall back to the "could not access camera" state, which is itself a valid thing to verify (FR‑7.4) but not a substitute for testing a real scan.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="module" id="regression">
+      <div class="module-head"><h2>Regression focus for this cycle</h2></div>
+      <p class="module-desc">
+        These are freshly fixed issues from the current build. Give each one deliberate attention —
+        they were either broken outright or silently wrong before this cycle.
+      </p>
+
+      <ul class="checklist">
+        <li>
+          <input type="checkbox" id="r1" />
+          <div>
+            <label class="item-title" for="r1">All displayed amounts show real naira values, not inflated 100×</label>
+            <div class="item-note">Previously every screen that showed money (wallet balance, transactions, view links, link details, place order, order details, create-link success) displayed the raw kobo figure as if it were naira — e.g. a ₦15,000 item showed as ₦1,500,000. Check every money figure in the app against what was actually entered/charged.</div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="r2" />
+          <div>
+            <label class="item-title" for="r2">Scan / Paste no longer crashes</label>
+            <div class="item-note">Previously threw "Could not find a generator for route RouteSettings('scanCode', null)" and hard-crashed the app. Confirm tapping the Scan/Paste quick action from the dashboard always opens the Receive Payment screen.</div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="r3" />
+          <div>
+            <label class="item-title" for="r3">Product image upload works and is optional</label>
+            <div class="item-note">The "tap to add photos" zone was previously unresponsive, and Edit/Delete on an added photo did nothing. Confirm you can add, replace, and remove images, and can also submit a link with zero images.</div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="r4" />
+          <div>
+            <label class="item-title" for="r4">Insufficient balance shows a clear, specific message</label>
+            <div class="item-note">Previously the app navigated to a fake "Order Placed Successfully!" screen even when the wallet debit failed. Confirm checkout with an underfunded wallet shows "Insufficient wallet balance. Please fund your wallet and try again." and leaves the checkout form intact.</div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="r5" />
+          <div>
+            <label class="item-title" for="r5">Freshly paid orders appear in My Orders and Track Order</label>
+            <div class="item-note">A just-paid order sits in "in escrow" status until a rider is assigned. Previously it matched no tab in My Orders and never appeared in Track Order at all. Confirm a new order is visible immediately after a successful payment.</div>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" id="r6" />
+          <div>
+            <label class="item-title" for="r6">Amount field doesn't freeze or crash while typing</label>
+            <div class="item-note">The Total Order Amount field on Create Payment Link previously could throw a framework build-scope error while typing digits. Type a full amount (e.g. six digits) at normal typing speed and confirm the field stays responsive and formats live.</div>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 01 ONBOARDING -->
+    <section class="module" id="m1">
+      <div class="module-head"><span class="idx">01</span><h2>Onboarding</h2></div>
+      <p class="module-desc">First-launch experience for a signed-out user, before any account exists.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th class="id-col">ID</th><th>Requirement</th><th>Expected result</th><th>Pri</th></tr></thead>
+          <tbody>
+            <tr><td class="id">FR‑1.1</td><td class="req">App opens directly to the onboarding carousel on first launch (no session)</td><td class="expected">4 slides with animated background imagery, each with a headline and supporting copy; progress bar at top reflects current slide</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑1.2</td><td class="req">Carousel auto-advances and can be swiped manually</td><td class="expected">Slides progress on their own after a few seconds; a manual swipe overrides and resets the timer</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑1.3</td><td class="req">"Sign up" button</td><td class="expected">Navigates straight to the account-creation flow — no interstitial social-login picker</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑1.4</td><td class="req">"Login" button</td><td class="expected">Navigates straight to the email/password login screen — no interstitial social-login picker</td><td><span class="pill p1">P1</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 02 AUTH -->
+    <section class="module" id="m2">
+      <div class="module-head"><span class="idx">02</span><h2>Sign up &amp; login</h2></div>
+      <p class="module-desc">Account creation, email verification, login, and first-time PIN setup. Shared with Razz via the <code>techrific_auth</code> flow, scoped to Carty via the <code>X-App: carty-user</code> header.</p>
+
+      <div class="field-list">
+        <div class="field-card"><div class="name">first_name<span class="req-tag">REQUIRED</span></div><div class="rule">Free text</div></div>
+        <div class="field-card"><div class="name">last_name<span class="req-tag">REQUIRED</span></div><div class="rule">Free text</div></div>
+        <div class="field-card"><div class="name">tag (username)</div><div class="rule">Checked live for availability; auto-generated from email + last name if left blank</div></div>
+        <div class="field-card"><div class="name">email<span class="req-tag">REQUIRED</span></div><div class="rule">Valid email format; must be unique</div></div>
+        <div class="field-card"><div class="name">phone<span class="req-tag">REQUIRED</span></div><div class="rule">Must be unique</div></div>
+        <div class="field-card"><div class="name">password<span class="req-tag">REQUIRED</span></div><div class="rule">Minimum length enforced server-side</div></div>
+        <div class="field-card"><div class="name">referral_code</div><div class="rule">Optional</div></div>
+        <div class="field-card"><div class="name">date_of_birth</div><div class="rule">Collected at sign-up; date picker</div></div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th class="id-col">ID</th><th>Requirement</th><th>Expected result</th><th>Pri</th></tr></thead>
+          <tbody>
+            <tr><td class="id">FR‑2.1</td><td class="req">Submitting sign-up with a duplicate email</td><td class="expected">Rejected with "Email is already taken", form stays filled</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑2.2</td><td class="req">Submitting sign-up with a duplicate phone number</td><td class="expected">Rejected with "Phone is already taken"</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑2.3</td><td class="req">Successful sign-up</td><td class="expected">Account is created and the user is logged in immediately (session token issued) — email verification is <em>not</em> a login gate, only a gate on creating payment links</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑2.4</td><td class="req">Email OTP screen appears after sign-up</td><td class="expected">A 6-digit code is sent to the user's email; entering the correct code marks the email verified and shows a welcome message</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑2.5</td><td class="req">Login with correct email/password</td><td class="expected">Session established, proceeds to PIN setup (first login) or straight to Dashboard (returning user)</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑2.6</td><td class="req">Login with wrong password</td><td class="expected">Clear error shown, no navigation, password field not silently cleared without explanation</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑2.7</td><td class="req">First login — "Create a PIN" screen</td><td class="expected">4-digit PIN entry, followed by a confirmation re-entry; PIN is required for future quick access / transaction authorization</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑2.8</td><td class="req">Forgot Password flow</td><td class="expected">Requests a reset code by email, accepts the code, allows setting a new password, and that new password logs in successfully</td><td><span class="pill p2">P2</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 03 DASHBOARD -->
+    <section class="module" id="m3">
+      <div class="module-head"><span class="idx">03</span><h2>Dashboard</h2></div>
+      <p class="module-desc">Home screen — the app's landing point after login, and the hub for every other module.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th class="id-col">ID</th><th>Requirement</th><th>Expected result</th><th>Pri</th></tr></thead>
+          <tbody>
+            <tr><td class="id">FR‑3.1</td><td class="req">Greeting header</td><td class="expected">Shows "Hi, {first name}" and an avatar initial once profile data loads; shows a neutral placeholder while loading, never blank or an error string</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑3.2</td><td class="req">Quick actions row</td><td class="expected">Four tappable actions: <strong>Create Link</strong> → Create Payment Link screen; <strong>View Links</strong> → link list; <strong>Scan / Paste</strong> → Receive Payment screen; <strong>Track Order</strong> → active orders list</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑3.3</td><td class="req">Wallet balance card — no account number yet, KYC not verified</td><td class="expected">Shows "Verify your identity to get an account number for funding your wallet." with a <strong>Verify Identity</strong> button</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑3.4</td><td class="req">Wallet balance card — KYC verified, account not yet provisioned</td><td class="expected">Shows "Your virtual account is not ready yet." with a <strong>Get Account Number</strong> button</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑3.5</td><td class="req">Wallet balance card — account provisioned</td><td class="expected">Shows the funding account number (copy-to-clipboard on tap), account name, and bank name instead of the CTA</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑3.6</td><td class="req">Balance figure is in naira, correctly scaled</td><td class="expected">Matches the balance shown on the Wallet tab exactly — see regression item on kobo scaling</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑3.7</td><td class="req">Hide/show balance toggle (eye icon)</td><td class="expected">Balance masks to dots and back on tap; state does not persist across a screen reload (resets to visible)</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑3.8</td><td class="req">"Get Razz at razz.ng" card</td><td class="expected">Opens razz.ng in the device's external browser; explains the shared wallet with Razz for instant transfers and bill payments</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑3.9</td><td class="req">Recent Transactions section</td><td class="expected">Shows up to 5 most recent transactions with correct amount, direction (credit/debit), and status; "No transactions yet" when empty; "See all" opens the Wallet tab</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑3.10</td><td class="req">Pull-to-refresh</td><td class="expected">Re-fetches profile and transactions; balance and list update without a full screen reload</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑3.11</td><td class="req">Bottom navigation</td><td class="expected">Home / Orders / Wallet / Account are all reachable and the active tab is visually indicated</td><td><span class="pill p0">P0</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 04 WALLET -->
+    <section class="module" id="m4">
+      <div class="module-head"><span class="idx">04</span><h2>Wallet &amp; funding</h2></div>
+      <p class="module-desc">Identity verification, funding account provisioning, balance, and the full transaction ledger.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th class="id-col">ID</th><th>Requirement</th><th>Expected result</th><th>Pri</th></tr></thead>
+          <tbody>
+            <tr><td class="id">FR‑4.1</td><td class="req">"Verify Identity" flow</td><td class="expected">Prompts for date of birth, then launches the identity verification SDK (document/selfie capture); on success shows a confirmation and the account eventually becomes KYC-verified</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑4.2</td><td class="req">"Get Account Number" flow</td><td class="expected">Provisions a virtual funding account without re-running identity verification (already verified); button shows a loading state while in flight</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑4.3</td><td class="req">Verification/provisioning failure</td><td class="expected">Shows a specific error toast rather than failing silently; button returns to its normal (non-loading) state</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑4.4</td><td class="req">Copy account number</td><td class="expected">Tapping the account number (or its copy icon) copies it to clipboard and confirms with a toast</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑4.5</td><td class="req">Wallet tab — balance and date</td><td class="expected">Matches the Dashboard balance exactly; shows current date next to the balance</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑4.6</td><td class="req">Transaction filter tabs — All / Pending / Completed</td><td class="expected">Each tab shows only transactions in the matching status; switching tabs updates the list without a full reload</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑4.7</td><td class="req">Transaction list grouping</td><td class="expected">Grouped by date with "Today" / "Yesterday" labels where applicable, otherwise a formatted date</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑4.8</td><td class="req">Withdraw</td><td class="expected">Requires at least one saved payout method; select a beneficiary, enter amount and PIN, submit; success/failure is clearly communicated</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑4.9</td><td class="req">Add Payout method</td><td class="expected">Bank account added and immediately selectable on the Withdraw screen</td><td><span class="pill p1">P1</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 05 CREATE LINK -->
+    <section class="module" id="m5">
+      <div class="module-head"><span class="idx">05</span><h2>Create payment link</h2></div>
+      <p class="module-desc">A seller builds a shareable link for a single item/order that a buyer pays from their Carty wallet.</p>
+
+      <div class="field-list">
+        <div class="field-card"><div class="name">Order Name<span class="req-tag">REQUIRED</span></div><div class="rule">Free text</div></div>
+        <div class="field-card"><div class="name">Order Description<span class="req-tag">REQUIRED</span></div><div class="rule">Up to 250 characters, counter shown</div></div>
+        <div class="field-card"><div class="name">Product Images</div><div class="rule">Optional. PNG/JPG only, multiple allowed</div></div>
+        <div class="field-card"><div class="name">Total Order Amount<span class="req-tag">REQUIRED</span></div><div class="rule">Must be a valid amount greater than zero</div></div>
+        <div class="field-card"><div class="name">Quantity<span class="req-tag">REQUIRED</span></div><div class="rule">Whole number</div></div>
+        <div class="field-card"><div class="name">Pick Up In (days)<span class="req-tag">REQUIRED</span></div><div class="rule">Whole number</div></div>
+        <div class="field-card"><div class="name">Delivery Mode<span class="req-tag">REQUIRED</span></div><div class="rule">Pickup / Bike / Van</div></div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th class="id-col">ID</th><th>Requirement</th><th>Expected result</th><th>Pri</th></tr></thead>
+          <tbody>
+            <tr><td class="id">FR‑5.1</td><td class="req">Amount field formats live, calculator-style</td><td class="expected">Typing digits right-to-left builds a naira amount with 2 decimals and thousands separators (e.g. typing <code>50000</code> shows <code>500.00</code>); field never shows raw unformatted digits after the first keystroke</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑5.2</td><td class="req">Adding product images</td><td class="expected">Tapping the upload zone opens the device photo picker; selected images appear as thumbnails</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑5.3</td><td class="req">Replacing an image</td><td class="expected">Edit icon on a thumbnail opens the picker again and swaps just that image</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑5.4</td><td class="req">Removing an image</td><td class="expected">Delete icon removes just that thumbnail, others remain</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑5.5</td><td class="req">Submitting with zero images</td><td class="expected">Succeeds — images are optional, not required</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑5.6</td><td class="req">Submitting with a required field empty</td><td class="expected">Blocked client-side with "Please fill all required fields", no network call made</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑5.7</td><td class="req">Submitting before email is verified</td><td class="expected">Server rejects with "You must verify your email first."; message is shown to the user (not swallowed)</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑5.8</td><td class="req">Successful creation</td><td class="expected">Navigates to a success screen showing: a scannable QR code encoding the link, the shareable URL, the correct naira amount, Copy and Share actions</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑5.9</td><td class="req">Share action</td><td class="expected">Opens the device share sheet with a message containing the link</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑5.10</td><td class="req">Any submission failure (network, validation, etc.)</td><td class="expected">Exactly one error toast is shown — not zero, not two</td><td><span class="pill p1">P1</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 06 VIEW LINKS -->
+    <section class="module" id="m6">
+      <div class="module-head"><span class="idx">06</span><h2>View &amp; manage links</h2></div>
+      <p class="module-desc">A seller's list of previously created payment links.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th class="id-col">ID</th><th>Requirement</th><th>Expected result</th><th>Pri</th></tr></thead>
+          <tbody>
+            <tr><td class="id">FR‑6.1</td><td class="req">List of created links</td><td class="expected">Each row shows product thumbnail, name, share URL, and the correct naira amount</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑6.2</td><td class="req">Empty state</td><td class="expected">"No payment links yet" when the seller has none</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑6.3</td><td class="req">Tapping a link row</td><td class="expected">Opens Link Details: full product images gallery, description, delivery method, and the share URL</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑6.4</td><td class="req">Copy / Share on Link Details</td><td class="expected">Copy puts the URL on clipboard with confirmation; Share opens the device share sheet</td><td><span class="pill p2">P2</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 07 RECEIVE -->
+    <section class="module" id="m7">
+      <div class="module-head"><span class="idx">07</span><h2>Receive payment (scan / paste)</h2></div>
+      <p class="module-desc">How a buyer opens someone else's payment link — by scanning its QR code or pasting the link text. This is the replacement for direct deep-linking, which is not reliable for links shared outside the app.</p>
+
+      <div class="precond">
+        <span class="label">Note</span>
+        <span>Links look like <code>https://carty.ng/pay/&lt;code&gt;</code>. The app extracts the trailing code from whatever is scanned or pasted, so a bare code also works if a full link isn't available.</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th class="id-col">ID</th><th>Requirement</th><th>Expected result</th><th>Pri</th></tr></thead>
+          <tbody>
+            <tr><td class="id">FR‑7.1</td><td class="req">Opening Receive Payment</td><td class="expected">Opens directly on the Scan tab with a live camera preview; a Scan/Paste toggle is visible at the top</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑7.2</td><td class="req">Scanning a valid Carty QR code</td><td class="expected">Automatically detects the code, fetches the order, and navigates to Place Order — no manual confirm step needed</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑7.3</td><td class="req">Torch toggle</td><td class="expected">Turns the device flashlight on/off for scanning in low light</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑7.4</td><td class="req">Camera unavailable / permission denied</td><td class="expected">Shows "Could not access the camera. You can paste the link instead." in place of the preview — does not crash the screen</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑7.5</td><td class="req">Switching to Paste Link tab</td><td class="expected">Shows a text field for pasting a link (or bare code) and a Continue button</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑7.6</td><td class="req">Pasting a valid link and continuing</td><td class="expected">Loads the order and navigates to Place Order, same as a successful scan</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑7.7</td><td class="req">Pasting an unknown/invalid code</td><td class="expected">Error toast "Payment link not found" (or similar); form remains on screen and usable for another attempt</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑7.8</td><td class="req">Opening a link whose seller deactivated it</td><td class="expected">Error toast "This payment link is no longer active"; does not proceed to checkout</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑7.9</td><td class="req">Submitting the paste field empty</td><td class="expected">Blocked client-side with "Paste a payment link or code first"</td><td><span class="pill p2">P2</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 08 PLACE ORDER -->
+    <section class="module" id="m8">
+      <div class="module-head"><span class="idx">08</span><h2>Place order (checkout)</h2></div>
+      <p class="module-desc">Buyer fills delivery details and pays for a specific payment link from their Carty wallet balance.</p>
+
+      <div class="field-list">
+        <div class="field-card"><div class="name">Full Name<span class="req-tag">REQUIRED</span></div><div class="rule">Free text</div></div>
+        <div class="field-card"><div class="name">Phone Number<span class="req-tag">REQUIRED</span></div><div class="rule">Free text</div></div>
+        <div class="field-card"><div class="name">Email Address</div><div class="rule">Optional</div></div>
+        <div class="field-card"><div class="name">Delivery Address<span class="req-tag">REQUIRED</span></div><div class="rule">Minimum 20 characters</div></div>
+        <div class="field-card"><div class="name">State<span class="req-tag">REQUIRED</span></div><div class="rule">Dropdown</div></div>
+        <div class="field-card"><div class="name">City / Landmark<span class="req-tag">REQUIRED</span></div><div class="rule">Dropdown, populated after State is chosen</div></div>
+        <div class="field-card"><div class="name">Delivery Note</div><div class="rule">Optional free text</div></div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th class="id-col">ID</th><th>Requirement</th><th>Expected result</th><th>Pri</th></tr></thead>
+          <tbody>
+            <tr><td class="id">FR‑8.1</td><td class="req">Product summary at top of screen</td><td class="expected">Shows the item image, name, and correct naira amount matching what the seller set</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑8.2</td><td class="req">Choosing a State populates its Cities</td><td class="expected">City dropdown appears and is scoped to the chosen state only after a state is selected</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑8.3</td><td class="req">Choosing a City calculates delivery fee</td><td class="expected">A delivery fee row appears and is added into the running total; shown as its own line in Order Summary</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑8.4</td><td class="req">Delivery address under 20 characters</td><td class="expected">Blocked with "Please provide a detailed address (minimum 20 characters)"</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑8.5</td><td class="req">Request Extra Inspection toggle</td><td class="expected">Revealing a list of optional inspection add-ons with individual costs; selecting one adds it to Order Summary and the total</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑8.6</td><td class="req">Toggling Extra Inspection on with nothing selected, then submitting</td><td class="expected">Blocked with "Please select at least one extra inspection option"</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑8.7</td><td class="req">Order Summary total</td><td class="expected">Equals Product Amount + Delivery Fee + Extra Inspection (when present); the submit button label shows this same total</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑8.8</td><td class="req">Submitting with a sufficiently funded wallet</td><td class="expected">Order is created, wallet is debited by the exact total, and the app navigates to an order-confirmation screen</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑8.9</td><td class="req">Submitting with an underfunded wallet</td><td class="expected">Toast: "Insufficient wallet balance. Please fund your wallet and try again." No order is created (verify it does not appear in My Orders), no wallet debit occurs, and the checkout form remains filled in for a retry after funding</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑8.10</td><td class="req">Seller attempts to buy from their own link</td><td class="expected">Rejected with "seller cannot buy from their own payment link" — verify this using the same account that created the link</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑8.11</td><td class="req">Repeat Order (from View Links or Order Details)</td><td class="expected">Opens Place Order pre-scoped to that same payment link</td><td><span class="pill p2">P2</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 09 ORDERS -->
+    <section class="module" id="m9">
+      <div class="module-head"><span class="idx">09</span><h2>Orders &amp; tracking</h2></div>
+      <p class="module-desc">Every order a user is party to, either as buyer or seller, across its lifecycle from payment to delivery.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th class="id-col">ID</th><th>Requirement</th><th>Expected result</th><th>Pri</th></tr></thead>
+          <tbody>
+            <tr><td class="id">FR‑9.1</td><td class="req">My Orders — Completed tab</td><td class="expected">Shows orders with status <code>completed</code> or <code>delivered</code> only</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑9.2</td><td class="req">My Orders — In Transit tab</td><td class="expected">Shows orders with status <code>pending_payment</code>, <code>in_escrow</code>, <code>assigned</code>, or <code>picked_up</code> — i.e. everything actively in progress, including a just-paid order still awaiting rider assignment</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑9.3</td><td class="req">My Orders — Cancelled tab</td><td class="expected">Shows orders with status <code>cancelled</code> only</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑9.4</td><td class="req">Search on My Orders</td><td class="expected">Filters the current tab's list by customer or order name</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑9.5</td><td class="req">Track Order screen</td><td class="expected">Lists all of the user's non-terminal orders (same statuses as the In Transit definition above), searchable by order number or item name</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑9.6</td><td class="req">Empty states</td><td class="expected">"No orders in progress" / "No Orders" shown appropriately per tab/screen, never a blank white area</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑9.7</td><td class="req">Order Details screen</td><td class="expected">Shows order name, order ID, placed date, status, description, payment link (copyable), uploaded images, payment status, receiver info, and a link to the order timeline</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑9.8</td><td class="req">Order amounts on Order Details</td><td class="expected">Item amount and delivery fee shown in correct naira, matching what was charged at checkout</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑9.9</td><td class="req">Leave a Rating</td><td class="expected">Available from Order Details; submits and reflects on the order once delivered</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑9.10</td><td class="req">View order timeline</td><td class="expected">Shows a chronological progress history (e.g. "Payment held in escrow" → assignment → pickup → delivery)</td><td><span class="pill p2">P2</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 10 TRANSACTIONS -->
+    <section class="module" id="m10">
+      <div class="module-head"><span class="idx">10</span><h2>Transactions</h2></div>
+      <p class="module-desc">The wallet ledger — every debit and credit against the user's balance, including order payments, withdrawals, and any Razz-side activity on the same shared wallet.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th class="id-col">ID</th><th>Requirement</th><th>Expected result</th><th>Pri</th></tr></thead>
+          <tbody>
+            <tr><td class="id">FR‑10.1</td><td class="req">Transaction Details screen</td><td class="expected">Shows transaction ID, amount (correct naira), reference, status (with color-coded pill), date, and description</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑10.2</td><td class="req">Credit vs debit presentation</td><td class="expected">Credits show a "+" prefix, debits a "−" prefix, consistently between the Dashboard, Wallet tab, and Transaction Details</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑10.3</td><td class="req">A checkout payment appears in the ledger</td><td class="expected">After a successful order payment, a matching debit transaction appears with a description referencing the order</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑10.4</td><td class="req">Report Issue from Transaction Details</td><td class="expected">Opens a report form scoped to that transaction</td><td><span class="pill p2">P2</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 11 NOTIFICATIONS -->
+    <section class="module" id="m11">
+      <div class="module-head"><span class="idx">11</span><h2>Notifications</h2></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th class="id-col">ID</th><th>Requirement</th><th>Expected result</th><th>Pri</th></tr></thead>
+          <tbody>
+            <tr><td class="id">FR‑11.1</td><td class="req">Notification bell on Dashboard</td><td class="expected">Opens the notifications list</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑11.2</td><td class="req">Mark as read</td><td class="expected">Tapping a notification marks it read individually; a "mark all as read" action clears all unread state</td><td><span class="pill p2">P2</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 12 ACCOUNT -->
+    <section class="module" id="m12">
+      <div class="module-head"><span class="idx">12</span><h2>Account &amp; profile</h2></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th class="id-col">ID</th><th>Requirement</th><th>Expected result</th><th>Pri</th></tr></thead>
+          <tbody>
+            <tr><td class="id">FR‑12.1</td><td class="req">Profile Info screen</td><td class="expected">Shows and allows editing of name, phone, and related profile fields; changes persist after navigating away and back</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑12.2</td><td class="req">Payouts list</td><td class="expected">Shows saved payout/beneficiary accounts, matching what's selectable on Withdraw</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑12.3</td><td class="req">Delete Account</td><td class="expected">Requires explicit confirmation before proceeding; account is no longer accessible afterward</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑12.4</td><td class="req">Logout</td><td class="expected">Returns to the login screen; session token is cleared (re-opening the app does not silently log back in)</td><td><span class="pill p1">P1</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CROSS-CUTTING -->
+    <section class="module" id="cross-cutting">
+      <div class="module-head"><span class="idx">13</span><h2>Cross-cutting rules</h2></div>
+      <p class="module-desc">Rules that apply across every screen above — check these opportunistically as you move through each module rather than as one separate pass.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th class="id-col">ID</th><th>Requirement</th><th>Expected result</th><th>Pri</th></tr></thead>
+          <tbody>
+            <tr><td class="id">FR‑13.1</td><td class="req">Currency formatting</td><td class="expected">Every money figure app-wide is a real naira value with a ₦ symbol, 2 decimal places, and thousands separators — never a raw integer, never off by a factor of 100</td><td><span class="pill p0">P0</span></td></tr>
+            <tr><td class="id">FR‑13.2</td><td class="req">Error surfacing</td><td class="expected">Every failed action (network error, validation error, server rejection) shows exactly one toast with a specific, actionable message — never a silent failure, never a stacked duplicate toast</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑13.3</td><td class="req">Loading states</td><td class="expected">Buttons that trigger a network call show a spinner and become non-interactive while in flight; they never appear to "do nothing" on tap</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑13.4</td><td class="req">Empty states</td><td class="expected">Every list screen has a purpose-written empty state (icon + message) — never a blank area that looks broken</td><td><span class="pill p2">P2</span></td></tr>
+            <tr><td class="id">FR‑13.5</td><td class="req">Back navigation</td><td class="expected">Every screen reachable from a quick action or list row can be backed out of without crashing or losing the previous screen's state</td><td><span class="pill p1">P1</span></td></tr>
+            <tr><td class="id">FR‑13.6</td><td class="req">No app-breaking route errors</td><td class="expected">Every quick action, list row, and button navigates to a real, working screen — no "no route defined" crashes anywhere in the app</td><td><span class="pill p0">P0</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- OUT OF SCOPE -->
+    <section class="module" id="out-of-scope">
+      <div class="module-head"><span class="idx">14</span><h2>Out of scope for this cycle</h2></div>
+
+      <div class="callout limit">
+        <p class="callout-title">Known limitations — do not file as bugs</p>
+        <ul>
+          <li><strong>Direct deep linking.</strong> Opening a shared <code>carty.ng/pay/…</code> link outside the app does not automatically open the app to that order. Scan/Paste inside the app is the supported way to open someone else's link. Worth flagging separately if the business wants true deep links later.</li>
+          <li><strong>Web browser access.</strong> The Carty user app targets Android and iOS only. It is not published for browser use — do not test it there for this cycle.</li>
+          <li><strong>Rider-facing flows.</strong> Accepting deliveries, rider availability, and rider order management live in a separate Carty Rider app, not covered by this document.</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="doc-footer">
+      Carty User App — Functional Requirements Document · Internal use for QA · Do not distribute outside the QA/engineering team (contains a dev-only OTP override).
+    </footer>
+  </main>
+</div>
